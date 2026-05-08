@@ -20,16 +20,18 @@
             background-color: transparent;
         }
         .img-cute {
-            /* 已經正式替換為您上傳的檔案 */
-            background-image: url('圖片1.svg');
+            /* 正常狀態：還沒吃到食物、肚子餓的松鼠 */
+            background-image: url('肚子餓的鼠.svg');
             background-size: contain; 
             background-repeat: no-repeat; 
             background-position: center bottom;
         }
         .img-fat {
-            /* 若有圖 2 肥胖松鼠，請解除下方註解並放上檔名 */
-            /* background-image: url('fat.png'); */
-            background-size: contain; background-repeat: no-repeat; background-position: center;
+            /* 暴走狀態：吃到食物變胖的壞松鼠 */
+            background-image: url('壞鼠.svg');
+            background-size: contain; 
+            background-repeat: no-repeat; 
+            background-position: center;
         }
         .img-food {
             /* 若有圖 3 食物，請解除下方註解並放上檔名 */
@@ -86,8 +88,7 @@
             z-index: 50;
         }
 
-        /* 預設圖形 (若您日後把胖松鼠等圖片換好，也可以把對應的 Emoji 刪掉) */
-        .default-fat::after { content: '🐹'; font-size: 55px; display: block; text-align: center; line-height: 80px; filter: drop-shadow(0 0 5px red); }
+        /* 預設圖形 (已移除會擋住您手繪圖的 cute 和 fat Emoji) */
         .default-food::after { content: '🍪'; font-size: 35px; display: block; text-align: center; line-height: 50px; }
         .default-hand::after { content: '🤚'; font-size: 50px; display: block; text-align: center; }
         .default-ranger::after { content: '🐿️💂‍♂️'; font-size: 60px; display: block; text-align: center; }
@@ -97,10 +98,10 @@
 
     </style>
 </head>
-<body class="bg-amber-100 flex items-center justify-center min-h-screen m-0 select-none">
+<body class="bg-amber-100 flex items-center justify-center h-[100dvh] m-0 select-none overflow-hidden">
 
     <!-- 遊戲主容器 -->
-    <div id="game-container" class="w-full max-w-md h-[800px] max-h-screen bg-[#dcebc8] relative shadow-2xl overflow-hidden border-4 border-amber-800 flex flex-col">
+    <div id="game-container" class="w-full h-full sm:max-w-md sm:h-[800px] sm:max-h-[95dvh] sm:rounded-xl bg-[#dcebc8] relative shadow-2xl overflow-hidden border-0 sm:border-4 border-amber-800 flex flex-col">
         
         <!-- 頂部資訊列 -->
         <div id="ui-top" class="bg-amber-800 text-white p-3 flex justify-between items-center z-20">
@@ -121,7 +122,7 @@
 
         <!-- 遊戲畫面區 -->
         <div id="game-area" class="flex-grow relative bg-gradient-to-b from-blue-200 to-[#dcebc8] cursor-crosshair">
-            <!-- 兩側的樹木 (圖2元素) -->
+            <!-- 兩側的樹木 -->
             <div id="tree-left" class="absolute left-0 top-0 bottom-0 w-16 img-tree default-tree border-r-4 border-black/20 flex flex-col justify-end pb-20">
                 <div class="damaged-mark"></div>
             </div>
@@ -137,43 +138,45 @@
         </div>
 
         <!-- 遊戲開始/結束 覆蓋層 -->
-        <div id="overlay" class="absolute inset-0 bg-black/80 z-50 flex flex-col items-center justify-center p-6 text-center backdrop-blur-sm transition-opacity duration-300">
+        <div id="overlay" class="absolute inset-0 bg-black/80 z-50 flex flex-col items-center justify-center p-4 sm:p-6 text-center backdrop-blur-sm transition-opacity duration-300">
             
-            <div id="start-screen" class="bg-[#fcf8ed] p-6 rounded-2xl border-4 border-amber-600 shadow-xl max-w-[90%]">
-                <div class="img-ranger default-ranger h-24 mb-4 mx-auto"></div>
-                <h1 class="text-3xl font-black text-amber-900 mb-2 tracking-widest">護林員任務</h1>
-                <p class="text-xl font-bold text-gray-800 mb-4 bg-amber-200 inline-block px-3 py-1 rounded -rotate-2">「所以...餵食野生動物真的好嗎？」</p>
-                <div class="text-left text-sm text-gray-700 space-y-2 mb-6 font-medium">
+            <div id="start-screen" class="bg-[#fcf8ed] p-4 sm:p-6 rounded-2xl border-4 border-amber-600 shadow-xl w-[95%] sm:max-w-[90%] max-h-[90dvh] overflow-y-auto overscroll-contain flex flex-col">
+                <div class="img-ranger default-ranger h-16 sm:h-24 mb-2 sm:mb-4 mx-auto shrink-0"></div>
+                <h1 class="text-2xl sm:text-3xl font-black text-amber-900 mb-2 tracking-widest">護林員任務</h1>
+                <p class="text-lg sm:text-xl font-bold text-gray-800 mb-4 bg-amber-200 inline-block px-3 py-1 rounded -rotate-2">「所以...餵食野生動物真的好嗎？」</p>
+                <div class="text-left text-sm text-gray-700 space-y-2 mb-4 font-medium">
                     <p>🚨 <span class="font-bold text-red-600">遊客又來亂餵食了！</span></p>
                     <p>👉 點擊天上掉下來的<span class="text-amber-600 font-bold">人類食物</span>，將其沒收。</p>
-                    <p>⚠️ 如果松鼠吃到食物，會變成<span class="text-red-600 font-bold">肥胖長牙松鼠</span>去啃咬樹皮！</p>
-                    <p>🩹 若出現肥胖松鼠，請<span class="font-bold underline text-blue-600">狂點牠3次</span>送去勒戒所！</p>
+                    <p>⚠️ 如果松鼠吃到食物，<span class="text-red-600 font-bold">族群量會變多然後啃咬樹皮造成樹木死亡</span>！</p>
+                    <p>🩹 若出現肥胖松鼠，請<span class="font-bold underline text-blue-600">點擊牠1次</span>進行族群控制！</p>
                 </div>
                 
-                <input type="text" id="player-name" placeholder="輸入您的護林員代號" class="w-full mb-4 px-4 py-3 rounded-xl border-2 border-amber-400 focus:outline-none focus:border-amber-600 text-center font-bold text-gray-700 text-lg shadow-inner">
+                <input type="text" id="player-name" placeholder="輸入您的護林員代號" class="w-full mb-4 px-4 py-3 rounded-xl border-2 border-amber-400 focus:outline-none focus:border-amber-600 text-center font-bold text-gray-700 text-lg shadow-inner shrink-0">
                 
-                <button onclick="startGame()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-xl py-4 rounded-xl shadow-lg transform transition active:scale-95 border-b-4 border-amber-800">
+                <button onclick="startGame()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-xl py-4 rounded-xl shadow-lg transform transition active:scale-95 border-b-4 border-amber-800 shrink-0">
                     開始守護森林！
                 </button>
             </div>
 
-            <div id="game-over-screen" class="hidden bg-[#fcf8ed] p-6 rounded-2xl border-4 border-red-600 shadow-xl max-w-[90%] w-full">
-                <div class="img-fat default-fat h-24 w-24 mx-auto mb-4 bg-red-100 rounded-full border-4 border-red-400 p-2"></div>
-                <h1 class="text-3xl font-black text-red-600 mb-2">森林受損嚴重</h1>
-                <div class="bg-red-50 p-3 rounded-lg text-left text-sm text-red-800 font-medium mb-4 border border-red-200">
+            <div id="game-over-screen" class="hidden bg-[#fcf8ed] p-4 sm:p-6 rounded-2xl border-4 border-red-600 shadow-xl w-[95%] sm:max-w-[90%] max-h-[90dvh] overflow-y-auto overscroll-contain flex flex-col">
+                <!-- 遊戲結束畫面的大圖也改為壞松鼠 -->
+                <div class="img-fat h-20 w-20 sm:h-24 sm:w-24 mx-auto mb-2 sm:mb-4 bg-red-100 rounded-full border-4 border-red-400 p-2 shrink-0"></div>
+                <h1 class="text-2xl sm:text-3xl font-black text-red-600 mb-2">森林受損嚴重</h1>
+                <div class="bg-red-50 p-3 rounded-lg text-left text-sm text-red-800 font-medium mb-4 border border-red-200 shrink-0">
                     <p class="mb-2">「人類食物會導致野生動物太肥、嚴重影響健康...」</p>
                     <p>「餵食更會導致族群過度成長，使林木遭受嚴重鼠害...」</p>
                 </div>
-                <p class="text-lg font-bold text-gray-700 mb-4">本次沒收了 <span id="final-score" class="text-3xl text-amber-600">0</span> 份食物</p>
+                <p class="text-lg font-bold text-gray-700 mb-2">本次沒收了 <span id="final-score" class="text-3xl text-amber-600">0</span> 份食物</p>
                 
-                <div class="bg-amber-100 rounded-lg p-3 mb-4 w-full text-center">
-                    <h2 class="text-lg font-black text-amber-900 mb-2 border-b-2 border-amber-300 pb-1">🏆 優秀護林員排行榜 🏆</h2>
+                <div class="bg-amber-100 rounded-lg p-2 mb-4 w-full text-center relative shrink-0">
+                    <h2 class="text-lg font-black text-amber-900 mb-2 border-b-2 border-amber-300 pb-1">🌐 全球護林員排行榜 🌐</h2>
                     <ul id="leaderboard-list" class="text-sm font-bold text-gray-800 text-left space-y-1">
                         <!-- 動態生成排行榜 -->
+                        <li class="text-center text-gray-500 py-2">讀取資料庫中...</li>
                     </ul>
                 </div>
 
-                <button onclick="startGame()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-xl py-4 rounded-xl shadow-lg transform transition active:scale-95 border-b-4 border-amber-800">
+                <button onclick="startGame()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-xl py-4 rounded-xl shadow-lg transform transition active:scale-95 border-b-4 border-amber-800 shrink-0">
                     重新挑戰
                 </button>
             </div>
@@ -181,13 +184,89 @@
         </div>
 
         <!-- 隨機飄出的遊客心聲 -->
-        <div id="tourist-text" class="absolute top-20 right-4 bg-white/90 px-3 py-2 rounded-xl text-sm font-bold text-gray-700 border-2 border-gray-300 shadow-md transform rotate-3 hidden z-10 transition-all">
+        <div id="tourist-text" class="absolute top-16 sm:top-20 right-2 sm:right-4 bg-white/90 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold text-gray-700 border-2 border-gray-300 shadow-md transform rotate-3 hidden z-10 transition-all max-w-[60%]">
             「蛤？拿麼可愛，為什麼不可以？！」
         </div>
 
     </div>
 
-    <script>
+    <!-- 將原本的腳本改為 module，並引入 Firebase 雲端資料庫模組 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+        // --- 雲端資料庫 (Firebase) 設定 ---
+        let db, auth, appId, currentUser;
+        let isFirebaseActive = false;
+        let globalScores = [];
+
+        // 檢查環境中是否具備雲端連線變數
+        let firebaseConfigObj = null;
+        if (typeof __firebase_config !== 'undefined') {
+            firebaseConfigObj = JSON.parse(__firebase_config);
+        } else {
+            // =========================================================================
+            // 🚀 若要放上 GitHub Pages 並擁有全球排行榜，請將您的 Firebase 設定貼在下方 🚀
+            // =========================================================================
+            /* firebaseConfigObj = {
+                apiKey: "填入您的_API_KEY",
+                authDomain: "填入您的_PROJECT_ID.firebaseapp.com",
+                projectId: "填入您的_PROJECT_ID",
+                storageBucket: "填入您的_PROJECT_ID.appspot.com",
+                messagingSenderId: "填入您的_SENDER_ID",
+                appId: "填入您的_APP_ID"
+            };
+            */
+        }
+
+        if (firebaseConfigObj) {
+            try {
+                const app = initializeApp(firebaseConfigObj);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                isFirebaseActive = true;
+
+                // 匿名登入或憑證登入，取得上傳成績的權限
+                const initAuth = async () => {
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (e) { console.error("登入失敗", e); }
+                };
+                initAuth();
+
+                // 監聽排行榜資料
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (user) {
+                        const leaderboardRef = collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard');
+                        onSnapshot(leaderboardRef, (snapshot) => {
+                            const scores = [];
+                            snapshot.forEach(doc => scores.push(doc.data()));
+                            
+                            // 在網頁端根據分數高低進行排序
+                            scores.sort((a, b) => b.score - a.score);
+                            globalScores = scores.slice(0, 5); // 取前五名
+                            
+                            // 如果目前處於結算畫面，立即更新顯示
+                            if (!isPlaying && !document.getElementById('game-over-screen').classList.contains('hidden')) {
+                                updateLeaderboardUI();
+                            }
+                        }, (error) => {
+                            console.error("無法取得排行榜資料:", error);
+                        });
+                    }
+                });
+            } catch (e) {
+                console.warn("雲端服務啟動失敗，將降級為本機模式。", e);
+            }
+        }
+
         // --- 遊戲狀態與變數 ---
         let health = 100;
         let score = 0;
@@ -201,8 +280,8 @@
         let foods = [];
         let squirrels = [];
         
-        let spawnRate = 2000; // 食物掉落間隔(毫秒)
-        let fallSpeed = 3;    // 食物掉落速度
+        let spawnRate = 2000; 
+        let fallSpeed = 3;    
 
         // DOM 元素
         const scoreDisplay = document.getElementById('score');
@@ -218,14 +297,11 @@
         const touristText = document.getElementById('tourist-text');
         const gameArea = document.getElementById('game-area');
 
-        // --- 核心邏輯 ---
-
-        function startGame() {
-            // 獲取玩家名稱
+        // 將 startGame 綁定到 window 讓按鈕可以點擊到
+        window.startGame = function() {
             const nameInput = document.getElementById('player-name').value.trim();
             playerName = nameInput !== "" ? nameInput : "無名護林員";
 
-            // 初始化數值
             health = 100;
             score = 0;
             combo = 0;
@@ -240,27 +316,24 @@
             treeLeft.classList.remove('is-damaged');
             treeRight.classList.remove('is-damaged');
 
-            // 隱藏介面
             overlay.classList.add('opacity-0', 'pointer-events-none');
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
 
-            // 初始生成兩隻可愛松鼠
-            spawnSquirrel();
-            spawnSquirrel();
+            // 正常情況下，保持3隻基礎可愛松鼠
+            spawnSquirrel('cute');
+            spawnSquirrel('cute');
+            spawnSquirrel('cute');
 
-            // 啟動迴圈
             clearInterval(gameInterval);
             clearInterval(spawnInterval);
             clearInterval(difficultyInterval);
 
-            gameInterval = setInterval(gameLoop, 1000 / 30); // 30 FPS
+            gameInterval = setInterval(gameLoop, 1000 / 30); 
             spawnInterval = setInterval(spawnFood, spawnRate);
             
-            // 難度隨時間增加，遊客話語隨機出現
             difficultyInterval = setInterval(() => {
                 if(!isPlaying) return;
-                // 加快難度提升速度：每3秒提升一次，食物生成更快，掉落速度增加更多
                 if(spawnRate > 350) {
                     spawnRate -= 150;
                     fallSpeed += 0.8;
@@ -268,7 +341,6 @@
                     spawnInterval = setInterval(spawnFood, spawnRate);
                 }
                 
-                // 遊客台詞彈出
                 if(Math.random() > 0.5) {
                     touristText.classList.remove('hidden');
                     setTimeout(() => touristText.classList.add('hidden'), 3000);
@@ -283,37 +355,61 @@
             clearInterval(difficultyInterval);
             
             finalScore.innerText = score;
-            saveAndDisplayLeaderboard();
+            
+            // 處理排行榜邏輯 (雲端 或 本機)
+            handleLeaderboard();
             
             overlay.classList.remove('opacity-0', 'pointer-events-none');
             gameOverScreen.classList.remove('hidden');
         }
 
-        function saveAndDisplayLeaderboard() {
-            // 從 localStorage 讀取歷史分數
+        async function handleLeaderboard() {
+            if (isFirebaseActive && currentUser) {
+                // 有雲端環境：上傳成績
+                const leaderboardRef = collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard');
+                try {
+                    await addDoc(leaderboardRef, { 
+                        name: playerName, 
+                        score: score, 
+                        timestamp: Date.now() 
+                    });
+                    // UI 會被 onSnapshot 監聽器自動更新，但我們先顯示目前的確保畫面不會空著
+                    updateLeaderboardUI();
+                } catch (e) {
+                    console.error("成績上傳失敗:", e);
+                    handleLocalLeaderboard(); // 失敗則退回本機儲存
+                }
+            } else {
+                // 無雲端環境 (例如從 GitHub Pages 執行但沒自己綁資料庫)：使用本機儲存
+                handleLocalLeaderboard();
+            }
+        }
+
+        function handleLocalLeaderboard() {
             let scores = JSON.parse(localStorage.getItem('squirrelDefenderScores')) || [];
-            
-            // 加入本次分數
             scores.push({ name: playerName, score: score });
-            
-            // 依照分數由高到低排序
             scores.sort((a, b) => b.score - a.score);
-            
-            // 只保留前 5 名
-            scores = scores.slice(0, 5);
-            
-            // 存回 localStorage
-            localStorage.setItem('squirrelDefenderScores', JSON.stringify(scores));
-            
-            // 更新排行榜畫面
+            globalScores = scores.slice(0, 5);
+            localStorage.setItem('squirrelDefenderScores', JSON.stringify(globalScores));
+            document.querySelector('#leaderboard-list').previousElementSibling.innerText = "🏆 本機護林員排行榜 🏆";
+            updateLeaderboardUI();
+        }
+
+        function updateLeaderboardUI() {
             const listEl = document.getElementById('leaderboard-list');
             listEl.innerHTML = '';
-            scores.forEach((entry, index) => {
+            
+            if (globalScores.length === 0) {
+                listEl.innerHTML = '<li class="text-center text-gray-500 py-2">目前還沒有紀錄！</li>';
+                return;
+            }
+
+            globalScores.forEach((entry, index) => {
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center bg-white/50 px-3 py-2 rounded shadow-sm";
                 
-                // 標示出玩家本次的成績
-                if(entry.name === playerName && entry.score === score) {
+                // 若這筆資料是玩家剛剛打出的成績，給予金色高亮框
+                if(entry.name === playerName && entry.score === score && score > 0) {
                     li.className += " border-2 border-amber-500 bg-amber-200 text-amber-900";
                 }
                 
@@ -326,38 +422,34 @@
         function updateUI() {
             scoreDisplay.innerText = score;
             
-            // 更新 Combo 顯示
             if (combo > 1) {
                 comboDisplay.innerText = `${combo} 連擊!`;
                 comboDisplay.classList.remove('hidden');
                 comboDisplay.classList.remove('shake');
-                void comboDisplay.offsetWidth; // 觸發重繪
+                void comboDisplay.offsetWidth; 
                 comboDisplay.classList.add('shake');
             } else {
                 comboDisplay.classList.add('hidden');
             }
 
-            // 更新樹木健康度 (滿分100，5棵樹，每棵代表20健康度)
-            const maxTrees = 5;
+            // 森林健康度階段變化邏輯
+            // 健康: 🌲, 死亡: 🪾
+            let currentHealth = Math.max(0, health);
+            let greenCount = Math.ceil(currentHealth / 20); // 共 5 棵樹，每棵代表 20 點健康度
+            let stumpCount = 5 - greenCount;
+
             healthTrees.innerHTML = '';
-            for(let i = 0; i < maxTrees; i++) {
-                let treeHealth = health - (i * 20); 
-                
-                if (treeHealth >= 10) {
-                    healthTrees.innerHTML += '<span class="transform scale-100 transition-transform origin-bottom">🌲</span>';
-                } else if (treeHealth > 0) {
-                    healthTrees.innerHTML += '<span class="transform scale-90 transition-transform origin-bottom drop-shadow-md">🍁</span>';
-                } else {
-                    healthTrees.innerHTML += '<span class="opacity-40 grayscale transform scale-75 transition-all origin-bottom">🪵</span>';
-                }
+            for(let i = 0; i < greenCount; i++) {
+                healthTrees.innerHTML += '<span class="transform scale-100 transition-transform origin-bottom">🌲</span>';
+            }
+            for(let i = 0; i < stumpCount; i++) {
+                healthTrees.innerHTML += '<span class="opacity-60 transform scale-90 transition-all origin-bottom drop-shadow-sm">🪾</span>';
             }
 
             if (health <= 0) {
                 gameOver();
             }
         }
-
-        // --- 產生實體 ---
 
         function spawnFood() {
             if(!isPlaying) return;
@@ -392,15 +484,19 @@
             entitiesContainer.appendChild(el);
         }
 
-        function spawnSquirrel() {
-            const size = 90; // 稍微放大以展示您的畫作
+        function spawnSquirrel(type = 'cute', spawnX = null) {
+            const size = 90; 
             const minX = 70;
             const maxX = gameArea.clientWidth - 70 - size;
-            const x = Math.random() * (maxX - minX) + minX;
+            // 如果有指定 X 座標(食物掉落處)就用指定的，否則隨機產生
+            const x = spawnX !== null ? spawnX : (Math.random() * (maxX - minX) + minX);
             
             const el = document.createElement('div');
-            // 只保留 img-cute，讓您的 SVG 直接顯示，不會被表情符號擋住
-            el.className = 'absolute bottom-12 img-cute transition-all duration-300 z-10';
+            // 根據類型給予不同的 CSS 與圖案
+            el.className = type === 'cute' 
+                ? 'absolute bottom-12 img-cute transition-all duration-300 z-10'
+                : 'absolute bottom-12 img-fat transition-all duration-300 z-10';
+            
             el.style.width = size + 'px';
             el.style.height = size + 'px';
             el.style.left = x + 'px';
@@ -408,10 +504,10 @@
             const squirrelObj = { 
                 el, x, y: 0, 
                 active: true, 
-                state: 'cute',
+                state: type,
                 direction: Math.random() > 0.5 ? 1 : -1,
-                speed: 1 + Math.random() * 2,
-                clicksToCure: 0
+                speed: type === 'cute' ? (1 + Math.random() * 2) : 1.5,
+                clicksToCure: type === 'fat' ? 1 : 0
             };
             
             el.addEventListener('mousedown', (e) => healSquirrel(e, squirrelObj));
@@ -419,9 +515,12 @@
 
             squirrels.push(squirrelObj);
             entitiesContainer.appendChild(el);
-        }
 
-        // --- 玩家互動 ---
+            if (type === 'fat') {
+                const rect = el.getBoundingClientRect();
+                showFloatingText("⚠️族群擴張!", rect.left + 20, rect.top, '#ef4444');
+            }
+        }
 
         function confiscateFood(e, food) {
             if(!food.active || !isPlaying) return;
@@ -457,13 +556,9 @@
             showFloatingText("💢", e.clientX, e.clientY, '#ef4444');
 
             if(sq.clicksToCure <= 0) {
-                sq.state = 'cute';
-                sq.el.className = 'absolute bottom-12 img-cute transition-all duration-300 z-10';
-                sq.el.style.width = '90px';
-                sq.el.style.height = '90px';
-                sq.speed = 1 + Math.random() * 2;
-                sq.direction = Math.random() > 0.5 ? 1 : -1;
-                showFloatingText("✨康復✨", e.clientX, e.clientY, '#3b82f6');
+                sq.active = false;
+                sq.el.remove();
+                showFloatingText("🛡️族群控制", e.clientX, e.clientY, '#3b82f6');
             }
         }
 
@@ -483,8 +578,6 @@
             setTimeout(() => el.remove(), 1000);
         }
 
-        // --- 遊戲迴圈更新邏輯 ---
-
         function gameLoop() {
             if(!isPlaying) return;
 
@@ -501,27 +594,14 @@
                     combo = 0; 
                     updateUI();
                     
-                    let closestSq = null;
-                    let minDist = Infinity;
-                    squirrels.forEach(sq => {
-                        if(sq.state === 'cute') {
-                            let dist = Math.abs(sq.x - food.x);
-                            if(dist < minDist) {
-                                minDist = dist;
-                                closestSq = sq;
-                            }
-                        }
-                    });
-
-                    if(closestSq && minDist < 100) {
-                        makeSquirrelFat(closestSq);
-                    } else if(squirrels.length < 8) {
-                        spawnSquirrel();
-                    }
+                    // 食物沒有被撿走，新增一隻會破壞樹木的胖松鼠
+                    spawnSquirrel('fat', food.x);
                 }
             });
 
             foods = foods.filter(f => f.active);
+            // 濾除已經被「族群控制」的松鼠
+            squirrels = squirrels.filter(sq => sq.active);
 
             const gameWidth = gameArea.clientWidth;
             
@@ -553,21 +633,6 @@
                     sq.el.style.transform = sq.direction === 1 ? 'scaleX(-1)' : 'scaleX(1)';
                 }
             });
-        }
-
-        function makeSquirrelFat(sq) {
-            sq.state = 'fat';
-            sq.clicksToCure = 3; 
-            sq.speed = 1.5; 
-            
-            sq.el.className = 'absolute bottom-12 img-fat default-fat transition-all duration-300 z-10';
-            sq.el.style.width = '90px';
-            sq.el.style.height = '90px';
-            
-            sq.direction = Math.random() > 0.5 ? 1 : -1;
-            
-            const rect = sq.el.getBoundingClientRect();
-            showFloatingText("⚠️變胖了!", rect.left + 20, rect.top, '#ef4444');
         }
 
         let damageCooldown = false;
